@@ -16,12 +16,33 @@ def store_eiin(request):
 
 # Read (GET)
 @api_view(['GET'])
-def home(request):
-    eiin = EiinTbl.objects.all()
+def get_eiins(request):
+    
+    # Define a mapping of query parameters to model fields
+    filter_params = {
+        'eiin': 'eiin',
+        'code': 'code',
+        'name': 'name__icontains',
+        'district': 'district',
+        'upazila': 'upazila'
+    }
+    
+    # Build the filter criteria dynamically
+    filter_criteria = {field: request.query_params.get(param) for param, field in filter_params.items() if request.query_params.get(param) is not None}
+
+    # Filter queryset based on criteria
+    eiin_queryset = EiinTbl.objects.filter(**filter_criteria)
+
+    # Paginate queryset
     paginator = PageNumberPagination()
-    result_page = paginator.paginate_queryset(eiin, request)
+    result_page = paginator.paginate_queryset(eiin_queryset, request)
+
+    # Serialize data and return response
     serializer = EIINSerializer(result_page, many=True)
-    return paginator.get_paginated_response({"status_code": status.HTTP_200_OK, "payload": serializer.data})
+    return paginator.get_paginated_response({
+        "status_code": status.HTTP_200_OK, 
+        "payload": serializer.data
+    })
 
 # Read Single Item (GET)
 @api_view(['GET'])

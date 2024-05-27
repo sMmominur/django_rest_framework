@@ -4,7 +4,7 @@ from .views import *
 
 urlpatterns = [
     path('eiin', store_eiin),
-    path('eiins/', home, name='home'), # List all EIIN entries
+    path('eiins/', get_eiins, name='get_eiins'), # List all EIIN entries
     path('eiins/store/', store_eiin, name='store_eiin'), # Create a new EIIN entry
     path('eiins/<int:pk>/', get_eiin, name='get_eiin'), # Retrieve a single EIIN entry by ID
     path('eiins/<int:pk>/update/',update_eiin, name='update_eiin'), # Update a single EIIN entry by ID
