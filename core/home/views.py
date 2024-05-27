@@ -8,6 +8,11 @@ from .serializers import EIINSerializer
 # Create (POST)
 @api_view(['POST'])
 def store_eiin(request):
+    """
+    Creates a new EiinTbl object.
+    Returns a 201 response with the created object if successful.
+    Returns a 422 response with validation errors if validation fails.
+    """
     serializer = EIINSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -17,7 +22,12 @@ def store_eiin(request):
 # Read (GET)
 @api_view(['GET'])
 def get_eiins(request):
-    
+    """
+    Retrieves a paginated list of EiinTbl objects filtered by optional query parameters:
+    'eiin', 'code', 'name', 'district', and 'upazila'.
+    Filters are applied dynamically based on the presence of these query parameters in the request.
+    The results are paginated and serialized before being returned in the response.
+    """
     # Define a mapping of query parameters to model fields
     filter_params = {
         'eiin': 'eiin',
@@ -47,6 +57,10 @@ def get_eiins(request):
 # Read Single Item (GET)
 @api_view(['GET'])
 def get_eiin(request, pk):
+    """
+    Retrieves a single EiinTbl object by its primary key (pk).
+    Returns a 404 response if the object is not found.
+    """
     try:
         eiin = EiinTbl.objects.get(pk=pk)
     except EiinTbl.DoesNotExist:
@@ -58,6 +72,12 @@ def get_eiin(request, pk):
 # Update (PUT)
 @api_view(['PUT'])
 def update_eiin(request, pk):
+    """
+    Updates an existing EiinTbl object identified by its primary key (pk).
+    Returns a 404 response if the object is not found.
+    Returns a 200 response with the updated object if successful.
+    Returns a 422 response with validation errors if validation fails.
+    """
     try:
         eiin = EiinTbl.objects.get(pk=pk)
     except EiinTbl.DoesNotExist:
@@ -72,6 +92,10 @@ def update_eiin(request, pk):
 # Delete (DELETE)
 @api_view(['DELETE'])
 def delete_eiin(request, pk):
+    """
+    Deletes a single EiinTbl object by its primary key (pk).
+    Returns a 404 response if the object is not found.
+    """
     try:
         eiin = EiinTbl.objects.get(pk=pk)
     except EiinTbl.DoesNotExist:
