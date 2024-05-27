@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-
+from rest_framework.pagination import PageNumberPagination
 from home.models import EiinTbl
 from .serializers import EIINSerializer
 
@@ -18,8 +18,10 @@ def store_eiin(request):
 @api_view(['GET'])
 def home(request):
     eiin = EiinTbl.objects.all()
-    serializer = EIINSerializer(eiin, many=True)
-    return Response({"status_code": status.HTTP_200_OK, "payload": serializer.data}, status=status.HTTP_200_OK)
+    paginator = PageNumberPagination()
+    result_page = paginator.paginate_queryset(eiin, request)
+    serializer = EIINSerializer(result_page, many=True)
+    return paginator.get_paginated_response({"status_code": status.HTTP_200_OK, "payload": serializer.data})
 
 # Read Single Item (GET)
 @api_view(['GET'])
